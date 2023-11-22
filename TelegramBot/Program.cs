@@ -1,49 +1,51 @@
-﻿using System.Threading;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-
-var client = new TelegramBotClient("6777543810:AAF1TFUAdKjzCkIfZhpR4XYRpFT19HwB5o8");
-client.StartReceiving(HandleUpdateAsync, HandlePollingErrorAsync);
-
-var me = await client.GetMeAsync();
-
-Console.WriteLine($"Start listening for @{me.Username}");
-
-Console.ReadLine();
-
-async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken token)
+internal class Program
 {
-    // Only process Message updates: https://core.telegram.org/bots/api#message
-    if (update.Message is not { } message)
-        return;
-    // Only process text messages
-    if (message.Text is not { } messageText)
-        return;
-
-    var chatId = message.Chat.Id;
-
-    if (messageText.ToLower().Contains("привет"))
+    private static async Task Main(string[] args)
     {
-        await botClient.SendTextMessageAsync(
-            chatId: chatId,
-            text: "Приветик");
+
+        var client = new TelegramBotClient("6777543810:AAF1TFUAdKjzCkIfZhpR4XYRpFT19HwB5o8");
+        client.StartReceiving(HandleUpdateAsync, HandlePollingErrorAsync);
+
+        var me = await client.GetMeAsync();
+
+        Console.WriteLine($"Start listening for @{me.Username}");
+
+        Console.ReadLine();
+
+        async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken token)
+        {
+            if (update.Message is not { } message)
+                return;
+            if (message.Text is not { } messageText)
+                return;
+
+            var chatId = message.Chat.Id;
+
+            Message? botMessage = null;
+
+            if (messageText.ToLower() == "/start")
+            {
+                botMessage = await botClient.SendTextMessageAsync(chatId, "Привет, меня зовут Лайт, я - телеграм-бот, созданный при помощи нейросети ChatGPT. Я могу быть твоим личным помощником и дать тебе различные советы в различных областях, таких как программирование, математика, здоровье, фитнес, кулинария, путешествия и многое другое.");
+                return;
+            }
+
+            var userName = message.Chat.Username ?? "Anon";
+
+            Console.WriteLine($"{DateTime.UtcNow} | Received a '{messageText}' message in chat {chatId} from @{userName}.");
+
+            if (botMessage != null)
+                Console.WriteLine($"{DateTime.UtcNow} | Sented a '{botMessage?.Text}' message in chat {chatId}.");
+        }
+
+        Task HandlePollingErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
     }
-
-    var userName = message.Chat.Username;
-
-    Console.WriteLine($"Received a '{messageText}' message in chat {chatId} from {userName}.");
-
-    // Echo received message text
-    Message sentMessage = await botClient.SendTextMessageAsync(
-        chatId: chatId,
-        text: "You said:\n" + messageText);
-}
-
-Task HandlePollingErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken token)
-{
-    throw new NotImplementedException();
 }
