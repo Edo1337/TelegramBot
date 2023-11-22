@@ -3,49 +3,69 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using TelegramBot.OpenAI;
 
 internal class Program
 {
     private static async Task Main(string[] args)
     {
 
-        var client = new TelegramBotClient("6777543810:AAF1TFUAdKjzCkIfZhpR4XYRpFT19HwB5o8");
-        client.StartReceiving(HandleUpdateAsync, HandlePollingErrorAsync);
+        //var client = new TelegramBotClient("6777543810:AAF1TFUAdKjzCkIfZhpR4XYRpFT19HwB5o8");
+        //client.StartReceiving(HandleUpdateAsync, HandlePollingErrorAsync);
 
-        var me = await client.GetMeAsync();
+        //var me = await client.GetMeAsync();
 
-        Console.WriteLine($"Start listening for @{me.Username}");
+        //Console.WriteLine($"Start listening for @{me.Username}");
+
+        IOpenAIProxy chatOpenAI = new OpenAIProxy(
+            apiKey: "{API Key}");
+
+        var msg = Console.ReadLine();
+
+        do
+        {
+            var results = await chatOpenAI.SendChatMessage(msg);
+
+            foreach (var item in results)
+            {
+                Console.WriteLine($"{item.Role}: {item.Content}");
+            }
+
+            Console.WriteLine("Next Prompt:");
+            msg = Console.ReadLine();
+
+        } while (msg != "bye");
 
         Console.ReadLine();
 
-        async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken token)
-        {
-            if (update.Message is not { } message)
-                return;
-            if (message.Text is not { } messageText)
-                return;
+        //async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken token)
+        //{
+        //    if (update.Message is not { } message)
+        //        return;
+        //    if (message.Text is not { } messageText)
+        //        return;
 
-            var chatId = message.Chat.Id;
+        //    var chatId = message.Chat.Id;
 
-            Message? botMessage = null;
+        //    Message? botMessage = null;
 
-            if (messageText.ToLower() == "/start")
-            {
-                botMessage = await botClient.SendTextMessageAsync(chatId, "Привет, меня зовут Лайт, я - телеграм-бот, созданный при помощи нейросети ChatGPT. Я могу быть твоим личным помощником и дать тебе различные советы в различных областях, таких как программирование, математика, здоровье, фитнес, кулинария, путешествия и многое другое.");
-                return;
-            }
+        //    if (messageText.ToLower() == "/start")
+        //    {
+        //        botMessage = await botClient.SendTextMessageAsync(chatId, "Привет, меня зовут Лайт, я - телеграм-бот, созданный при помощи нейросети ChatGPT. Я могу быть твоим личным помощником и дать тебе различные советы в различных областях, таких как программирование, математика, здоровье, фитнес, кулинария, путешествия и многое другое.");
+        //        return;
+        //    }
 
-            var userName = message.Chat.Username ?? "Anon";
+        //    var userName = message.Chat.Username ?? "Anon";
 
-            Console.WriteLine($"{DateTime.UtcNow} | Received a '{messageText}' message in chat {chatId} from @{userName}.");
+        //    Console.WriteLine($"{DateTime.UtcNow} | Received a '{messageText}' message in chat {chatId} from @{userName}.");
 
-            if (botMessage != null)
-                Console.WriteLine($"{DateTime.UtcNow} | Sented a '{botMessage?.Text}' message in chat {chatId}.");
-        }
+        //    if (botMessage != null)
+        //        Console.WriteLine($"{DateTime.UtcNow} | Sented a '{botMessage?.Text}' message in chat {chatId}.");
+        //}
 
-        Task HandlePollingErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken token)
-        {
-            throw new NotImplementedException();
-        }
+        //Task HandlePollingErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken token)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
