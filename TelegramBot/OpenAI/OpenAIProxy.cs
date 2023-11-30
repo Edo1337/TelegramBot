@@ -41,11 +41,11 @@ namespace TelegramBot.OpenAI
             return SendChatMessage(chatMsg);
         }
 
-        async Task<ChatCompletionMessage[]> SendChatMessage(ChatCompletionMessage message)
+        async Task<ChatCompletionMessage[]> SendChatMessage(ChatCompletionMessage chatMsg)
         {
             //we should send all the messages
             //so we can give Open AI context of conversation
-            StackMessages(message);
+            StackMessages(chatMsg);
 
             var chatCompletion = new ChatCompletion
             {
@@ -54,8 +54,7 @@ namespace TelegramBot.OpenAI
                     Model = "gpt-3.5-turbo",
                     Messages = _messages.ToArray(),
                     Temperature = 0.2,
-                    MaxTokens = 800,
-                    
+                    MaxTokens = 800
                 }
             };
 
