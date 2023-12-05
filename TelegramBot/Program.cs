@@ -17,6 +17,7 @@ internal class Program
         var client = new TelegramBotClient("6777543810:AAF1TFUAdKjzCkIfZhpR4XYRpFT19HwB5o8");
         client.StartReceiving(HandleUpdateAsync, HandlePollingErrorAsync);
 
+        //RoleSeeder.InitialRoles();
 
         var me = await client.GetMeAsync();
         Console.ForegroundColor = ConsoleColor.White;
