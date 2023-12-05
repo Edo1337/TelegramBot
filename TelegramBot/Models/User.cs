@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace TelegramBot.Models
 {
     [Table("User")]
-    internal class User
+    public class User
     {
         public int UserId { get; set; }
 

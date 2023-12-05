@@ -8,7 +8,7 @@ namespace TelegramBot.Repositories
 {
     public interface IUserRepository
     {
-        public void AddUser(int userId, string name)
-
+        public void AddUser(string name);
+        public bool IsHaveUser(string userName);
     }
 }

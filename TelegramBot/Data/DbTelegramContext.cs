@@ -13,8 +13,8 @@ namespace TelegramBot.Data
 
     public class DbTelegramContext : DbContext
     {
-        DbSet<User> Users { get; set; }
-        DbSet<Role> Roles { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

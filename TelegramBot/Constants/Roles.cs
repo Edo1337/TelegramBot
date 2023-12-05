@@ -8,7 +8,7 @@ namespace TelegramBot.Constants
 {
     public enum Roles
     {
-        User,
+        User = 1,
         UserSubscription,
         Admin
     }
