@@ -58,16 +58,22 @@ namespace TelegramBot.OpenAI
                 }
             };
 
-            var result = await openAIClient.ChatCompletions.SendChatCompletionAsync(chatCompletion);
+            try
+            {
+                var result = await openAIClient.ChatCompletions.SendChatCompletionAsync(chatCompletion);
+                var choices = result.Response.Choices;
+                var messages = ToCompletionMessage(choices);
 
-            var choices = result.Response.Choices;
+                //stack the response as well - everything is context to Open AI
+                StackMessages(messages);
 
-            var messages = ToCompletionMessage(choices);
+                return messages;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Проблема с API ChatGPT");
+            }
 
-            //stack the response as well - everything is context to Open AI
-            StackMessages(messages);
-
-            return messages;
         }
     }
 }

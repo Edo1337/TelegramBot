@@ -41,8 +41,6 @@ internal class Program
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{DateTime.UtcNow} | Received a '{userMessageText}' message in chat {chatId} from @{userName}.");
 
-                var results = await chatOpenAI.SendChatMessage(userMessageText);
-
             Message? botMessage = null;
 
             if (userMessageText.ToLower() == "/start")
@@ -61,17 +59,18 @@ internal class Program
             }
             else
             {
+                var results = await chatOpenAI.SendChatMessage(userMessageText);
                 Console.WriteLine("Пишу..");
                 foreach (var item in results)
                 {
                     botMessage = await botClient.SendTextMessageAsync(chatId, item.Content);
                 }
+            }
 
-                if (botMessage != null)
-                {
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.WriteLine($"{DateTime.UtcNow} | Sented a '{botMessage?.Text}' message in chat {chatId} to @{userName}.");
-                }
+            if (botMessage != null)
+            {
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine($"{DateTime.UtcNow} | Sented a '{botMessage?.Text}' message in chat {chatId} to @{userName}.");
             }
         }
         Task HandlePollingErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken token)

@@ -3,6 +3,9 @@ using TelegramBot.Models;
 
 namespace TelegramBot.Data
 {
+    /// <summary>
+    /// Класс для создания ролей в БД
+    /// </summary>
     internal class RoleSeeder
     {
         public static void InitialRoles()

@@ -18,7 +18,11 @@ namespace TelegramBot.Repositories
             {
                 using (var context = new DbTelegramContext())
                 {
-                    var user = new User { Name = name };
+                    var user = new User 
+                    {
+                        Name = name,
+                        RoleId = 1
+                    };
 
                     context.Users.Add(user);
                     context.SaveChanges();
