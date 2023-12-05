@@ -19,7 +19,7 @@ namespace TelegramBot.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(
-                @"Server=(localdb)\mssqllocaldb;Database=Blogging;Trusted_Connection=True");
+                @"Server=(localdb)\mssqllocaldb;Database=GPTLite_DB;Trusted_Connection=True");
         }
     }
 }
