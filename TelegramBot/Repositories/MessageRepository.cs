@@ -8,23 +8,25 @@ using TelegramBot.Models;
 
 namespace TelegramBot.Repositories
 {
-    internal class UserMessageRepository
+    internal class MessageRepository : IMessageRepository
     {
-
-        public void AddMessage(string userText, User user)
+        public void AddMessage(string botText, string userText, long chatId, User user)
         {
             try
             {
                 using (var context = new DbTelegramContext())
                 {
-                    var message = new UserMessage
+                    var message = new Message
                     {
-                        Text = userText,
+                        TextBot = botText,
+                        TextUser = userText,
                         UserName = user.Name,
+                        ChatId = chatId,
+                        dateTime = DateTime.Now,
                         UserId = user.UserId
                     };
 
-                    context.UserMessages.Add(message);
+                    context.Messages.Add(message);
                     context.SaveChanges();
                 }
             }
@@ -33,6 +35,5 @@ namespace TelegramBot.Repositories
                 throw new Exception();
             }
         }
-
     }
 }

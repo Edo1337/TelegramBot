@@ -13,7 +13,7 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        IOpenAIProxy chatOpenAI = new OpenAIProxy("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");
+        IOpenAIProxy chatOpenAI = new OpenAIProxy("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");
         var client = new TelegramBotClient("6777543810:AAF1TFUAdKjzCkIfZhpR4XYRpFT19HwB5o8");
         client.StartReceiving(HandleUpdateAsync, HandlePollingErrorAsync);
 
@@ -36,16 +36,15 @@ internal class Program
             var userName = userMessage.Chat.Username ?? "Anon";
 
             var user = new UserRepository();
-            var userMess = new UserMessageRepository();
+            var message = new MessageRepository();
 
-            
-            userMess.AddMessage(userMessageText, user.FindUser(userName));
+            Telegram.Bot.Types.Message botMessage = null;
+
 
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{DateTime.UtcNow} | Received a '{userMessageText}' message in chat {chatId} from @{userName}.");
 
-            Message? botMessage = null;
 
             if (userMessageText.ToLower() == "/start")
             {
@@ -70,6 +69,8 @@ internal class Program
                 {
                     botMessage = await botClient.SendTextMessageAsync(chatId, item.Content);
                 }
+
+                message.AddMessage(botMessage.Text, userMessageText, chatId, user.FindUser(userName));
             }
 
             if (botMessage != null)

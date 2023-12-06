@@ -8,15 +8,21 @@ using System.Threading.Tasks;
 
 namespace TelegramBot.Models
 {
-    [Table("UserMessage")]
-    public class UserMessage
+    [Table("Message")]
+    public class Message
     {
-        public int UserMessageId { get; set; }
+        public int MessageId { get; set; }
 
         [Required]
-        public string Text { get; set; }
+        public string TextBot { get; set; }
+        [Required]
+        public string TextUser { get; set; }
         [Required]
         public string UserName { get; set; }
+        [Required]
+        public long ChatId { get; set; }
+        [Required]
+        public DateTime dateTime { get; set; }
 
         public int UserId { get; set; }
         public User User { get; set; }
