@@ -6,26 +6,33 @@ using System.Text;
 using System.Threading.Tasks;
 using TelegramBot.Data;
 using TelegramBot.Models;
+using TelegramBot.Constants;
 
 namespace TelegramBot.Repositories
 {
     internal class UserRepository : IUserRepository
     {
 
-        public void AddUser(string name)
+        public User AddUser(string name, DateTime createdAt)
         {
             try
             {
                 using (var context = new DbTelegramContext())
                 {
-                    var user = new User 
+                    var user = new User
                     {
                         Name = name,
-                        RoleId = 1
+                        CreatedAt = createdAt,
+                        RoleId = Convert.ToInt32(Roles.User)
                     };
 
                     context.Users.Add(user);
                     context.SaveChanges();
+
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"{createdAt} | New User: @{name}.\n");
+
+                    return user;
                 }
             }
             catch
@@ -41,7 +48,13 @@ namespace TelegramBot.Repositories
                 using (var context = new DbTelegramContext())
                 {
                     var user = context.Users
-                        .Single(b => b.Name == name);
+                        .SingleOrDefault(b => b.Name == name);
+
+                    if(user == null)
+                    {
+                        user = AddUser(name, DateTime.UtcNow); //а это точно норм архитектурно? Исправить надо
+                    }
+
                     return user;
                 }
             }
@@ -53,13 +66,11 @@ namespace TelegramBot.Repositories
 
         public bool IsHaveUser(string userName)
         {
-            using (var context = new DbTelegramContext())
-            {
-                var users = context.Users
-                    .Where(b => b.Name.Contains(userName))
-                    .ToList();
-                return users.Any();
-            }
+            using var context = new DbTelegramContext();
+            var users = context.Users
+                .Where(b => b.Name.Contains(userName))
+                .ToList();
+            return users.Any();
         }
     }
 }

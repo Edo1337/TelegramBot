@@ -1,12 +1,14 @@
 ﻿using Standard.AI.OpenAI.Clients.OpenAIs;
 using Standard.AI.OpenAI.Models.Configurations;
 using Standard.AI.OpenAI.Models.Services.Foundations.ChatCompletions;
+using Telegram.Bot.Types.Enums;
+
 
 namespace TelegramBot.OpenAI
 {
     internal class OpenAIProxy : IOpenAIProxy
     {
-        readonly OpenAIClient openAIClient;
+        readonly OpenAIClient _openAIClient;
 
         readonly List<ChatCompletionMessage> _messages;
 
@@ -18,7 +20,7 @@ namespace TelegramBot.OpenAI
                 ApiKey = apiKey
             };
 
-            openAIClient = new OpenAIClient(openAIConfigurations);
+            _openAIClient = new OpenAIClient(openAIConfigurations);
 
             _messages = new();
         }
@@ -60,7 +62,7 @@ namespace TelegramBot.OpenAI
 
             try
             {
-                var result = await openAIClient.ChatCompletions.SendChatCompletionAsync(chatCompletion);
+                var result = await _openAIClient.ChatCompletions.SendChatCompletionAsync(chatCompletion);
                 var choices = result.Response.Choices;
                 var messages = ToCompletionMessage(choices);
 
@@ -71,6 +73,8 @@ namespace TelegramBot.OpenAI
             }
             catch (Exception ex)
             {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.Black;
                 Console.WriteLine($"Произошла ошибка при отправке чата: {ex.Message}");
                 if (ex.InnerException != null)
                 {

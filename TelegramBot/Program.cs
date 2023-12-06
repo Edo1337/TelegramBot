@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.Data;
 using TelegramBot.Models;
 using TelegramBot.OpenAI;
@@ -13,15 +14,15 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        IOpenAIProxy chatOpenAI = new OpenAIProxy("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");
+        IOpenAIProxy chatOpenAI = new OpenAIProxy("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");
         var client = new TelegramBotClient("6777543810:AAF1TFUAdKjzCkIfZhpR4XYRpFT19HwB5o8");
-        client.StartReceiving(HandleUpdateAsync, HandlePollingErrorAsync);
+        RoleSeeder.InitialRoles();
 
-        //RoleSeeder.InitialRoles();
+        client.StartReceiving(HandleUpdateAsync, HandlePollingErrorAsync);
 
         var me = await client.GetMeAsync();
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine($"Start listening for @{me.Username}");
+        Console.WriteLine($"Start listening for @{me.Username}\n");
 
         Console.ReadLine();
 
@@ -38,44 +39,58 @@ internal class Program
             var user = new UserRepository();
             var message = new MessageRepository();
 
-            Telegram.Bot.Types.Message botMessage = null;
+            bool isHaveUser = user.IsHaveUser(userName);
 
+            Telegram.Bot.Types.Message? botMessage = null;
 
-            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"{DateTime.UtcNow} | Received a '{userMessageText}' message in chat {chatId} from @{userName}.");
+            Console.WriteLine($"{DateTime.UtcNow} | Received a '{userMessageText}' message in chat {chatId} from @{userName}.\n");
 
+//            ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
+//{
+//    new KeyboardButton[] { "Инфо", "" },
+//    new KeyboardButton[] { "Help me", "Call me ☎️" },
+//})
+//            {
+//                ResizeKeyboard = true
+//            };
+
+//            Telegram.Bot.Types.Message sentMessage = await botClient.SendTextMessageAsync(
+//                chatId: chatId,
+//                text: "Choose a response",
+//                replyMarkup: replyKeyboardMarkup);
 
             if (userMessageText.ToLower() == "/start")
             {
-
-                if (user.IsHaveUser(userName))
+                if (isHaveUser)
                 {
                     botMessage = await botClient.SendTextMessageAsync(chatId, "Привет, это снова ты, на всякий случай напомню, что меня зовут Лайт, я - телеграм-бот, созданный при помощи нейросети ChatGPT. Я все еще могу быть твоим личным помощником и дать тебе различные советы в различных областях, таких как программирование, математика, здоровье, фитнес, кулинария, путешествия и многое другое.");
                 }
                 else
                 {
                     botMessage = await botClient.SendTextMessageAsync(chatId, "Привет, меня зовут Лайт, я - телеграм-бот, созданный при помощи нейросети ChatGPT. Я могу быть твоим личным помощником и дать тебе различные советы в различных областях, таких как программирование, математика, здоровье, фитнес, кулинария, путешествия и многое другое.");
-                    user.AddUser(userName);
+                    DateTime createdAt = DateTime.Now;
+                    user.AddUser(userName, createdAt);
                     return;
                 }
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine("Пишу..");
+                Console.WriteLine("Думаю..\n");
                 var results = await chatOpenAI.SendChatMessage(userMessageText);
                 foreach (var item in results)
                 {
                     botMessage = await botClient.SendTextMessageAsync(chatId, item.Content);
                 }
 
-                message.AddMessage(botMessage.Text, userMessageText, chatId, user.FindUser(userName));
-            }
+                if (botMessage != null)
+                {
+                    DateTime dateTime = DateTime.Now;
+                    message.AddMessage(botMessage.Text, userMessageText, chatId, dateTime, user.FindUser(userName));
+                }
 
-            if (botMessage != null)
-            {
-                Console.WriteLine($"{DateTime.UtcNow} | Sented a '{botMessage?.Text}' message in chat {chatId} to @{userName}.");
+                Console.WriteLine($"{DateTime.UtcNow} | Sented a '{botMessage?.Text}' message in chat {chatId} to @{userName}.\n");
             }
         }
 

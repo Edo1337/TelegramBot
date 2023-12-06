@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace TelegramBot.Repositories
 {
     internal class MessageRepository : IMessageRepository
     {
-        public void AddMessage(string botText, string userText, long chatId, User user)
+        public void AddMessage(string botText, string userText, long chatId, DateTime dateTime, User user)
         {
             try
             {
@@ -22,7 +23,7 @@ namespace TelegramBot.Repositories
                         TextUser = userText,
                         UserName = user.Name,
                         ChatId = chatId,
-                        dateTime = DateTime.Now,
+                        dateTime = dateTime,
                         UserId = user.UserId
                     };
 
