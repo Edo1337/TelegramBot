@@ -34,6 +34,23 @@ namespace TelegramBot.Repositories
             }
         }
 
+        public User FindUser(string name)
+        {
+            try
+            {
+                using (var context = new DbTelegramContext())
+                {
+                    var user = context.Users
+                        .Single(b => b.Name == name);
+                    return user;
+                }
+            }
+            catch
+            {
+                throw new Exception();
+            }
+        }
+
         public bool IsHaveUser(string userName)
         {
             using (var context = new DbTelegramContext())

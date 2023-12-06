@@ -69,9 +69,14 @@ namespace TelegramBot.OpenAI
 
                 return messages;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception("Проблема с API ChatGPT");
+                Console.WriteLine($"Произошла ошибка при отправке чата: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Дополнительная информация: {ex.InnerException.Message}");
+                }
+                throw new Exception("Проблема с API ChatGPT", ex);
             }
 
         }

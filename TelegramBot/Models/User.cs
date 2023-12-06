@@ -15,8 +15,10 @@ namespace TelegramBot.Models
 
         [Required]
         public string? Name { get; set; }
-
+        
         public int RoleId { get; set; }
         public Role Role { get; set; }
+
+        public List<UserMessage> UserMessages { get; set; }
     }
 }

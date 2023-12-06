@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TelegramBot.Data;
 
@@ -10,9 +11,11 @@ using TelegramBot.Data;
 namespace TelegramBot.Migrations
 {
     [DbContext(typeof(DbTelegramContext))]
-    partial class DbTelegramContextModelSnapshot : ModelSnapshot
+    [Migration("20231206002353_Add_Table_UserMessage")]
+    partial class Add_Table_UserMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,7 +87,7 @@ namespace TelegramBot.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserMessage");
+                    b.ToTable("UserMessages");
                 });
 
             modelBuilder.Entity("TelegramBot.Models.User", b =>

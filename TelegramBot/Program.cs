@@ -13,7 +13,7 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        IOpenAIProxy chatOpenAI = new OpenAIProxy("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");
+        IOpenAIProxy chatOpenAI = new OpenAIProxy("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");
         var client = new TelegramBotClient("6777543810:AAF1TFUAdKjzCkIfZhpR4XYRpFT19HwB5o8");
         client.StartReceiving(HandleUpdateAsync, HandlePollingErrorAsync);
 
@@ -36,6 +36,10 @@ internal class Program
             var userName = userMessage.Chat.Username ?? "Anon";
 
             var user = new UserRepository();
+            var userMess = new UserMessageRepository();
+
+            
+            userMess.AddMessage(userMessageText, user.FindUser(userName));
 
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
@@ -59,8 +63,9 @@ internal class Program
             }
             else
             {
-                var results = await chatOpenAI.SendChatMessage(userMessageText);
+                Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine("Пишу..");
+                var results = await chatOpenAI.SendChatMessage(userMessageText);
                 foreach (var item in results)
                 {
                     botMessage = await botClient.SendTextMessageAsync(chatId, item.Content);
@@ -69,10 +74,10 @@ internal class Program
 
             if (botMessage != null)
             {
-                Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine($"{DateTime.UtcNow} | Sented a '{botMessage?.Text}' message in chat {chatId} to @{userName}.");
             }
         }
+
         Task HandlePollingErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken token)
         {
             throw new Exception();
