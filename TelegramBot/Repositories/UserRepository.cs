@@ -50,11 +50,6 @@ namespace TelegramBot.Repositories
                     var user = context.Users
                         .SingleOrDefault(b => b.Name == name);
 
-                    if(user == null)
-                    {
-                        user = AddUser(name, DateTime.UtcNow); //а это точно норм архитектурно? Исправить надо
-                    }
-
                     return user;
                 }
             }
