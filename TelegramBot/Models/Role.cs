@@ -18,6 +18,6 @@ namespace TelegramBot.Models
         [MaxLength(25)]
         public string? RoleName { get; set; }
 
-        public List<User> Users { get; set; }
+        public List<User>? Users { get; set; }
     }
 }

@@ -55,7 +55,7 @@ namespace TelegramBot.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Message");
+                    b.ToTable("Message", (string)null);
                 });
 
             modelBuilder.Entity("TelegramBot.Models.Role", b =>
@@ -73,7 +73,7 @@ namespace TelegramBot.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Role");
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("TelegramBot.Models.User", b =>
@@ -98,7 +98,7 @@ namespace TelegramBot.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("TelegramBot.Models.Message", b =>

@@ -6,6 +6,6 @@ namespace TelegramBot.Repositories
     {
         public User AddUser(string name, DateTime createdAt);
         public User FindUser(string name);
-        public bool IsHaveUser(string userName);
+        //public bool IsHaveUser(string userName);
     }
 }

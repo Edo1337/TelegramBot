@@ -14,17 +14,17 @@ namespace TelegramBot.Models
         public int MessageId { get; set; }
 
         [Required]
-        public string TextBot { get; set; }
+        public string? TextBot { get; set; }
         [Required]
-        public string TextUser { get; set; }
+        public string? TextUser { get; set; }
         [Required]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
         [Required]
         public long ChatId { get; set; }
         [Required]
         public DateTime dateTime { get; set; }
 
         public int UserId { get; set; }
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }
